@@ -16,7 +16,8 @@ import net.gyokuro.core {
     options,
     post,
     delete,
-    halt
+    halt,
+    patch
 }
 
 MutableList<Todo> todoDB = ArrayList<Todo>();
@@ -38,6 +39,9 @@ shared void run() {
     get("/todo/:todoId", `getTodo`);
     options("/todo/:todoId", `optionsHandler`);
 
+    // can change the to-do's title by PATCHing to the to-do's url
+    patch("/todo/:todoId", `modifyTodo`);
+
     Application {
         filters = [corsFilter];
         transformers = [jsonTransformer];
@@ -51,7 +55,7 @@ void corsFilter(Request req, Response resp, Anything(Request, Response) next) {
 
 void optionsHandler(Response response) {
     response.addHeader(Header("Access-Control-Allow-Headers", "Content-Type"));
-    response.addHeader(Header("Access-Control-Allow-Methods", "GET,POST,DELETE"));
+    response.addHeader(Header("Access-Control-Allow-Methods", "GET,POST,DELETE,PATCH"));
 }
 
 List<Todo> listTodos() => todoDB;
@@ -73,3 +77,11 @@ void deleteTodos() {
 Todo getTodo(Integer todoId) =>
         todoDB.find((t) => t.id == todoId)
         else halt(404, "TODO ``todoId`` not found");
+
+Todo modifyTodo(Integer todoId, Todo patch) {
+    value todo = getTodo(todoId);
+
+    todo.title = patch.title;
+
+    return todo;
+}
