@@ -94,6 +94,9 @@ Todo modifyTodo(Integer todoId, JsonObject patch) {
     if (exists completed = patch.getBooleanOrNull("completed")) {
         todo.completed = completed;
     }
+    if (exists order = patch.getIntegerOrNull("order")) {
+        todo.order = order;
+    }
 
     return todo;
 }
