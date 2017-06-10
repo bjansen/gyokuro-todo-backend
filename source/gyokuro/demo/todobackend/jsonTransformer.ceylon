@@ -31,7 +31,8 @@ object jsonTransformer satisfies Transformer {
 
     function serializeTodo(Todo o) =>
             JsonObject {
-                "title" -> o.title
+                "title" -> o.title,
+                "completed" -> o.completed
             };
 
     shared actual String serialize(Object o) {
