@@ -1,7 +1,8 @@
 import net.gyokuro.core {
     Application,
     get,
-    options
+    options,
+    post
 }
 import ceylon.http.server {
     Response,
@@ -18,8 +19,12 @@ shared void run() {
     get("/todo", (req, resp) => "Hello world!");
     options("/todo", `optionsHandler`);
 
+    // the api root responds to a POST with the todo which was posted to it
+    post("/todo", `createTodo`);
+
     Application {
         filters = [corsFilter];
+        transformers = [jsonTransformer];
     }.run();
 }
 
@@ -30,4 +35,8 @@ void corsFilter(Request req, Response resp, Anything(Request, Response) next) {
 
 void optionsHandler(Response response) {
     response.addHeader(Header("Access-Control-Allow-Headers", "Content-Type"));
+}
+
+Todo createTodo(Todo todo) {
+    return todo;
 }
