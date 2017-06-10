@@ -51,6 +51,7 @@ shared void run() {
 
     Application {
         filters = [corsFilter];
+        port = parseInteger(process.environmentVariableValue("PORT") else "8080") else 8080;
         transformers = [jsonTransformer];
     }.run();
 }
@@ -68,10 +69,12 @@ void optionsHandler(Response response) {
 List<Todo> listTodos() => todoDB;
 
 Todo createTodo(Request req, Todo todo) {
-    value address = req.destinationAddress.address;
-    value host = if (address == "0:0:0:0:0:0:0:1") then "localhost" else address;
+    value host = process.environmentVariableValue("APP_HOSTNAME") else "localhost";
+    value port = process.environmentVariableValue("APP_PORT")
+            else process.environmentVariableValue("PORT")
+            else req.destinationAddress.port.string;
 
-    todo.url = req.scheme + "://" + host + ":" + req.destinationAddress.port.string + todo.url;
+    todo.url = req.scheme + "://" + host + ":" + port + todo.url;
     todoDB.add(todo);
 
     return todo;
