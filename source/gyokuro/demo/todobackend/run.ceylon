@@ -15,7 +15,8 @@ import net.gyokuro.core {
     get,
     options,
     post,
-    delete
+    delete,
+    halt
 }
 
 MutableList<Todo> todoDB = ArrayList<Todo>();
@@ -27,11 +28,15 @@ shared void run() {
     get("/todo", `listTodos`);
     options("/todo", `optionsHandler`);
 
-    // the api root responds to a POST with the todo which was posted to it
+    // the api root responds to a POST with the to-do which was posted to it
     post("/todo", `createTodo`);
 
     // the api root responds successfully to a DELETE
     delete("/todo", `deleteTodos`);
+
+    // each new to-do has a url, which returns a to-do
+    get("/todo/:todoId", `getTodo`);
+    options("/todo/:todoId", `optionsHandler`);
 
     Application {
         filters = [corsFilter];
@@ -52,11 +57,19 @@ void optionsHandler(Response response) {
 List<Todo> listTodos() => todoDB;
 
 Todo createTodo(Request req, Todo todo) {
-    todo.url = req.scheme + "://" + req.destinationAddress.address + ":" + req.destinationAddress.port.string + todo.url;
+    value address = req.destinationAddress.address;
+    value host = if (address == "0:0:0:0:0:0:0:1") then "localhost" else address;
+
+    todo.url = req.scheme + "://" + host + ":" + req.destinationAddress.port.string + todo.url;
     todoDB.add(todo);
+
     return todo;
 }
 
 void deleteTodos() {
     todoDB.clear();
 }
+
+Todo getTodo(Integer todoId) =>
+        todoDB.find((t) => t.id == todoId)
+        else halt(404, "TODO ``todoId`` not found");
