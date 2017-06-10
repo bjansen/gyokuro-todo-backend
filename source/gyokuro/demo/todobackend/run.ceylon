@@ -17,7 +17,7 @@ import ceylon.http.common {
 shared void run() {
 
     // the api root responds to a GET (i.e. the server is up and accessible, CORS headers are set up)
-    get("/todo", (req, resp) => "Hello world!");
+    get("/todo", (req, resp) => "[]");
     options("/todo", `optionsHandler`);
 
     // the api root responds to a POST with the todo which was posted to it
