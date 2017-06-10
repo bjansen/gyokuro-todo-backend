@@ -1,13 +1,14 @@
-import net.gyokuro.transform.api {
-    Transformer
+import ceylon.interop.java {
+    javaClass
 }
 import ceylon.json {
     JsonObject,
     parse,
     JsonArray
 }
-import ceylon.interop.java {
-    javaClass
+
+import net.gyokuro.transform.api {
+    Transformer
 }
 
 object jsonTransformer satisfies Transformer {

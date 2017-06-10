@@ -9,6 +9,9 @@ import ceylon.http.server {
     Response,
     Request
 }
+import ceylon.json {
+    JsonObject
+}
 
 import net.gyokuro.core {
     Application,
@@ -18,9 +21,6 @@ import net.gyokuro.core {
     delete,
     halt,
     patch
-}
-import ceylon.json {
-    JsonObject
 }
 
 MutableList<Todo> todoDB = ArrayList<Todo>();
@@ -81,9 +81,9 @@ void deleteTodos() {
     todoDB.clear();
 }
 
+suppressWarnings ("expressionTypeNothing")
 Todo getTodo(Integer todoId) =>
-        todoDB.find((t) => t.id == todoId)
-        else halt(404, "TODO ``todoId`` not found");
+        todoDB.find((t) => t.id == todoId) else halt(404, "TODO ``todoId`` not found");
 
 Todo modifyTodo(Integer todoId, JsonObject patch) {
     value todo = getTodo(todoId);
