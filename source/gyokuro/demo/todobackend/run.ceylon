@@ -12,12 +12,18 @@ import ceylon.http.server {
 import ceylon.http.common {
     Header
 }
+import ceylon.collection {
+    MutableList,
+    ArrayList
+}
+
+MutableList<Todo> todoDB = ArrayList<Todo>();
 
 "Runs the todo backend."
 shared void run() {
 
     // the api root responds to a GET (i.e. the server is up and accessible, CORS headers are set up)
-    get("/todo", (req, resp) => "[]");
+    get("/todo", `listTodos`);
     options("/todo", `optionsHandler`);
 
     // the api root responds to a POST with the todo which was posted to it
@@ -42,10 +48,13 @@ void optionsHandler(Response response) {
     response.addHeader(Header("Access-Control-Allow-Methods", "GET,POST,DELETE"));
 }
 
+List<Todo> listTodos() => todoDB;
+
 Todo createTodo(Todo todo) {
+    todoDB.add(todo);
     return todo;
 }
 
 void deleteTodos() {
-
+    todoDB.clear();
 }

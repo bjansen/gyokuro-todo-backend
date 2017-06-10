@@ -3,7 +3,8 @@ import net.gyokuro.transform.api {
 }
 import ceylon.json {
     JsonObject,
-    parse
+    parse,
+    JsonArray
 }
 import ceylon.interop.java {
     javaClass
@@ -28,11 +29,21 @@ object jsonTransformer satisfies Transformer {
         return javaClass<Instance>().newInstance();
     }
 
-    shared actual String serialize(Object o) {
-        if (is Todo o) {
-            return JsonObject {
+    function serializeTodo(Todo o) =>
+            JsonObject {
                 "title" -> o.title
+            };
+
+    shared actual String serialize(Object o) {
+        if (is List<Todo> o) {
+            return JsonArray {
+                for (todo in o)
+                serializeTodo(todo)
             }.string;
+        }
+
+        if (is Todo o) {
+            return serializeTodo(o).string;
         }
 
         return "{}";
