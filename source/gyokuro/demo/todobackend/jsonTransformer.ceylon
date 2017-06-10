@@ -20,10 +20,15 @@ object jsonTransformer satisfies Transformer {
         if (`Instance` == `Todo`,
             is JsonObject json = parse(serialized),
             is Instance todo = Todo {
-                title = json.getString("title");
+                title = json.getStringOrNull("title") else "";
+                completed = json.getBooleanOrNull("completed") else false;
             }) {
 
             return todo;
+        } else if (`Instance` == `JsonObject`,
+            is Instance json = parse(serialized)) {
+
+            return json;
         }
 
         return javaClass<Instance>().newInstance();

@@ -19,6 +19,9 @@ import net.gyokuro.core {
     halt,
     patch
 }
+import ceylon.json {
+    JsonObject
+}
 
 MutableList<Todo> todoDB = ArrayList<Todo>();
 
@@ -40,6 +43,7 @@ shared void run() {
     options("/todo/:todoId", `optionsHandler`);
 
     // can change the to-do's title by PATCHing to the to-do's url
+    // can change the to-do's completedness by PATCHing to the to-do's url
     patch("/todo/:todoId", `modifyTodo`);
 
     Application {
@@ -78,10 +82,15 @@ Todo getTodo(Integer todoId) =>
         todoDB.find((t) => t.id == todoId)
         else halt(404, "TODO ``todoId`` not found");
 
-Todo modifyTodo(Integer todoId, Todo patch) {
+Todo modifyTodo(Integer todoId, JsonObject patch) {
     value todo = getTodo(todoId);
 
-    todo.title = patch.title;
+    if (exists title = patch.getStringOrNull("title")) {
+        todo.title = title;
+    }
+    if (exists completed = patch.getBooleanOrNull("completed")) {
+        todo.completed = completed;
+    }
 
     return todo;
 }
