@@ -46,6 +46,9 @@ shared void run() {
     // can change the to-do's completedness by PATCHing to the to-do's url
     patch("/todo/:todoId", `modifyTodo`);
 
+    // can delete a to-do making a DELETE request to the to-do's url
+    delete("/todo/:todoId", `deleteTodo`);
+
     Application {
         filters = [corsFilter];
         transformers = [jsonTransformer];
@@ -94,3 +97,6 @@ Todo modifyTodo(Integer todoId, JsonObject patch) {
 
     return todo;
 }
+
+void deleteTodo(Integer todoId) =>
+        todoDB.removeWhere((t) => t.id == todoId);
