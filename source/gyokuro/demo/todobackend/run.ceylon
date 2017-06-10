@@ -1,20 +1,21 @@
+import ceylon.collection {
+    MutableList,
+    ArrayList
+}
+import ceylon.http.common {
+    Header
+}
+import ceylon.http.server {
+    Response,
+    Request
+}
+
 import net.gyokuro.core {
     Application,
     get,
     options,
     post,
     delete
-}
-import ceylon.http.server {
-    Response,
-    Request
-}
-import ceylon.http.common {
-    Header
-}
-import ceylon.collection {
-    MutableList,
-    ArrayList
 }
 
 MutableList<Todo> todoDB = ArrayList<Todo>();
@@ -50,7 +51,8 @@ void optionsHandler(Response response) {
 
 List<Todo> listTodos() => todoDB;
 
-Todo createTodo(Todo todo) {
+Todo createTodo(Request req, Todo todo) {
+    todo.url = req.scheme + "://" + req.destinationAddress.address + ":" + req.destinationAddress.port.string + todo.url;
     todoDB.add(todo);
     return todo;
 }
