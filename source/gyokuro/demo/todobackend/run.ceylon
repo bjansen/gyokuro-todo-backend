@@ -2,7 +2,8 @@ import net.gyokuro.core {
     Application,
     get,
     options,
-    post
+    post,
+    delete
 }
 import ceylon.http.server {
     Response,
@@ -22,6 +23,9 @@ shared void run() {
     // the api root responds to a POST with the todo which was posted to it
     post("/todo", `createTodo`);
 
+    // the api root responds successfully to a DELETE
+    delete("/todo", `deleteTodos`);
+
     Application {
         filters = [corsFilter];
         transformers = [jsonTransformer];
@@ -35,8 +39,13 @@ void corsFilter(Request req, Response resp, Anything(Request, Response) next) {
 
 void optionsHandler(Response response) {
     response.addHeader(Header("Access-Control-Allow-Headers", "Content-Type"));
+    response.addHeader(Header("Access-Control-Allow-Methods", "GET,POST,DELETE"));
 }
 
 Todo createTodo(Todo todo) {
     return todo;
+}
+
+void deleteTodos() {
+
 }
