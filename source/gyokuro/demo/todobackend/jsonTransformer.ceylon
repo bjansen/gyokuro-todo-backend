@@ -22,6 +22,7 @@ object jsonTransformer satisfies Transformer {
             is Instance todo = Todo {
                 title = json.getStringOrNull("title") else "";
                 completed = json.getBooleanOrNull("completed") else false;
+                order = json.getIntegerOrNull("order") else -1;
             }) {
 
             return todo;
@@ -38,6 +39,7 @@ object jsonTransformer satisfies Transformer {
             JsonObject {
                 "title" -> o.title,
                 "completed" -> o.completed,
+                "order" -> o.order,
                 "url" -> o.url
             };
 
